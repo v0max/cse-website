@@ -1,0 +1,64 @@
+# Site-wide text and contact details.
+name: Computer Science Experts, LLC
+short_name: CSE
+description: Computer scientists and security practitioners providing investigations and expert testimony in privacy, security and software litigation.
+email: team@cse.llc
+phone: 860-558-7150
+offices: [Cambridge, Berkeley, New London, Toronto]
+registered_in: Massachusetts
+
+hero:
+  kicker: Testifying & consulting experts · Privacy · Security · Software
+  headline: Investigations and expert testimony performed with
+  headline_emphasis: obsessive diligence
+  lede: We are computer scientists and security practitioners. We find out what software actually does with people’s data and communications, then explain it clearly to judges, juries and arbitrators.
+
+matters_intro: "Most of our work turns on one question: what did the technology really do, and does that match what people were told?"
+matters:
+  - title: Wiretapping & interception
+    body: CIPA, the Federal Wiretap Act, Pennsylvania’s WESCA and similar statutes. Whether SDKs, pixels, chat widgets or voice assistants captured communications, and where they sent them.
+    experts: [serge-egelman, stuart-schechter, jonathan-hochman, bruce-schneier]
+  - title: Consumer protection & deception
+    body: FTC Act and state unfair-practices claims. Comparing what a company said about data with what its systems actually did.
+    experts: [serge-egelman, maritza-johnson, bruce-schneier]
+  - title: Privacy controls & consent
+    body: Whether settings, permissions, toggles and consent flows work the way people reasonably expect them to.
+    experts: [maritza-johnson, serge-egelman, stuart-schechter]
+  - title: Website & app tracking
+    body: Tracing data from websites and apps to third parties, and analyzing analytics exports and tag configurations such as Google Tag Manager containers.
+    experts: [stuart-schechter, serge-egelman, patrick-zimmerman]
+  - title: Security & incident response
+    body: Breach investigations, security program assessments, and controls under SOC 2, ISO 27001, NIST 800-53 and CMMC.
+    experts: [sara-lazarus, bruce-schneier, stuart-schechter]
+  - title: Cryptography & digital assets
+    body: Encryption, TLS, encrypted messaging, blockchains and cryptocurrencies.
+    experts: [joseph-bonneau, jacky-mallett, bruce-schneier]
+  - title: Intellectual property
+    body: Patent (including PTAB proceedings), copyright and trade-secret disputes involving software and internet infrastructure.
+    experts: [bruce-schneier, jonathan-hochman]
+  - title: Digital advertising & reputation
+    body: Ad tech, SEO and pay-per-click advertising, e-commerce, defamation and online reputation.
+    experts: [jonathan-hochman]
+  - title: Software engineering & platforms
+    body: Development practices, enterprise and payment systems, and how platform design shapes how information spreads.
+    experts: [sam-schreiber, erin-walk, jonathan-hochman]
+
+services_intro: From the first call through trial. Our experts collaborate as a team, so a matter gets the right mix of research depth, hands-on measurement and testimony experience.
+services:
+  - title: Investigate
+    body: "We measure what software actually does: capturing network traffic, instrumenting apps and SDKs, and reading analytics and tag configurations. Opinions rest on observed behavior."
+  - title: Consult
+    body: "Non-testifying support from the start: understanding the technology, framing discovery, and working through produced code, logs and documents."
+  - title: Report
+    body: Opening and rebuttal expert reports that set out technical findings and their basis in language a court can follow.
+  - title: Testify
+    body: Deposition, hearing and trial testimony in federal and state courts and in arbitration.
+
+experts_intro: Researchers whose work has shaped how the field understands privacy and security, alongside practitioners who have built and run the systems at issue.
+
+engage_intro: "Write to the founding members directly. A person reads every message: no gatekeeping assistant, no AI triage."
+conflicts_checklist:
+  - All parties, including adverse parties
+  - Court or forum, and case number
+  - Which side you represent
+  - Upcoming deadlines

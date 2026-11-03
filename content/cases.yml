@@ -1,0 +1,129 @@
+# Cases of note. Each case appears in the home page table and on the
+# profile page of every expert listed under `experts` (use the file names
+# from content/people, without ".md").
+#
+# status: Verdict | Judgment | Settled | Pending | PTAB
+# retained_by: plaintiff | defendant | petitioner | respondent | government
+# featured: true puts the case in "Recent matters" at the top of the home page
+#           (give it a short `question` to show there).
+cases:
+  - name: State of New Mexico v. Facebook, Inc.
+    short_name: New Mexico v. Facebook
+    forum: N.M. 1st Jud. Dist. Ct. No. D-101-CV-2021-00132
+    law: N.M. Unfair Practices Act
+    status: Verdict
+    year: 2026
+    issue: Facebook’s public statements about how it handled user data, following the Cambridge Analytica disclosures.
+    experts: [serge-egelman]
+    retained_by: plaintiff
+    link: https://nmdoj.gov/press-release/the-new-mexico-department-of-justice-secures-another-landmark-victory-against-big-tech-with-historic-25-billion-penalty-against-facebook/
+    outside_cse: true
+    featured: true
+    question: How Facebook’s public statements about user data compared with its practices
+
+  - name: Frasco v. Flo Health, Inc.
+    short_name: Frasco v. Flo Health
+    forum: N.D. Cal. No. 3:21-cv-00757
+    law: CIPA § 632
+    status: Verdict
+    year: 2025
+    issue: Reproductive-health data transmitted from a period-tracking app through embedded SDKs.
+    experts: [serge-egelman]
+    retained_by: plaintiff
+    link: https://www.courtlistener.com/docket/55370837/frasco-v-flo-health-inc/
+    outside_cse: true
+    featured: true
+    question: What a period-tracking app’s embedded SDKs transmitted, and to whom
+
+  - name: Rodriguez v. Google LLC
+    short_name: Rodriguez v. Google
+    forum: N.D. Cal. No. 3:20-cv-04688
+    law: California privacy law
+    status: Verdict
+    year: 2025
+    issue: Collection of app-activity data from users who had turned off Web & App Activity.
+    experts: [jonathan-hochman, bruce-schneier]
+    retained_by: plaintiff
+    link: https://www.courtlistener.com/docket/17348463/rodriguez-v-google-llc/
+    outside_cse: true
+    featured: true
+    question: Whether app activity was still collected after users turned off a privacy setting
+
+  - name: Brown v. Google LLC
+    short_name: Brown v. Google
+    forum: N.D. Cal. No. 20-cv-03664
+    law: Federal Wiretap Act, CIPA
+    status: Settled
+    year: 2024
+    issue: Collection of browsing data from users in private browsing modes such as Incognito.
+    experts: [jonathan-hochman, bruce-schneier]
+    retained_by: plaintiff
+    link: https://www.courtlistener.com/docket/17216783/brown-v-google-llc/
+    outside_cse: true
+
+  - name: Lopez v. Apple, Inc.
+    short_name: Lopez v. Apple
+    forum: N.D. Cal. No. 4:19-cv-04577
+    law: Federal Wiretap Act, CIPA
+    status: Settled
+    issue: Recording of conversations after unintended Siri activations.
+    experts: [serge-egelman]
+    retained_by: plaintiff
+    link: https://www.courtlistener.com/docket/16027233/lopez-v-apple-inc/
+    outside_cse: true
+
+  - name: Young et al. v. Salesforce, Inc.
+    short_name: Young v. Salesforce
+    forum: Class action
+    law: Pa. WESCA
+    status: Pending
+    issue: Interception of website chat conversations by a third-party chat platform.
+    experts: [stuart-schechter]
+    retained_by: plaintiff
+    link: https://www.courtlistener.com/docket/66676587/young-v-salesforce-inc/
+
+  - name: FTC v. Amazon.com, Inc.
+    short_name: FTC v. Amazon
+    forum: W.D. Wash. No. C14-1038-JCC
+    law: FTC Act § 5
+    status: Judgment
+    year: 2016
+    issue: Billing for in-app purchases made by children without the account holder’s authorization.
+    experts: [serge-egelman]
+    retained_by: government
+    link: https://www.ftc.gov/system/files/documents/cases/160427amazonorder.pdf
+    outside_cse: true
+
+  - name: Mon Cheri Bridals, LLC v. Cloudflare, Inc.
+    short_name: Mon Cheri Bridals v. Cloudflare
+    forum: N.D. Cal. No. 3:19-cv-01356 (transferred from C.D. Cal. No. 2:18-cv-09453)
+    law: Copyright
+    status: Judgment
+    year: 2021
+    issue: Whether a CDN and security provider contributed to its customers’ copyright infringement.
+    experts: [bruce-schneier]
+    retained_by: defendant
+    link: https://www.courtlistener.com/docket/14711246/mon-cheri-bridals-llc-v-cloudflare-inc/
+    outside_cse: true
+
+  - name: Epicor Software Corp. v. Protegrity Corp.
+    short_name: Epicor v. Protegrity
+    forum: PTAB CBM2015-00002
+    law: Patent
+    status: PTAB
+    issue: Covered business method review of a Protegrity patent.
+    experts: [bruce-schneier]
+    retained_by: petitioner
+    link: ''
+    outside_cse: true
+
+  - name: Apple, Inc. v. Achates Reference Publishing, Inc.
+    short_name: Apple v. Achates
+    forum: PTAB IPR2013-00080
+    law: Patent
+    status: PTAB
+    issue: Inter partes review of an Achates patent.
+    experts: [bruce-schneier]
+    retained_by: petitioner
+    link: ''
+    outside_cse: true

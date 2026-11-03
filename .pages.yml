@@ -1,0 +1,226 @@
+# Pages CMS (https://pagescms.org) — web forms for editing the site's content.
+# Sign in at https://app.pagescms.org with GitHub and open csexperts/cse-website.
+# Every save is a normal commit; the site and portraits rebuild automatically.
+
+media:
+  - name: photos
+    label: Headshots
+    input: content/photos
+    output: content/photos
+    extensions: [jpg, jpeg, png, webp]
+  - name: documents
+    label: Documents (CVs, testimony lists)
+    input: public/documents
+    output: /documents
+    extensions: [pdf]
+
+content:
+  - name: people
+    label: People
+    type: collection
+    path: content/people
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [name, role]
+      primary: name
+      sort: [name, role]
+    fields:
+      - name: name
+        label: Full name
+        type: string
+        required: true
+      - name: role
+        label: Role
+        type: select
+        required: true
+        options:
+          values: [Testifying Expert, Consulting Expert, Research Staff]
+      - name: photo
+        label: Headshot
+        type: image
+        description: Plain light background, even front lighting, head and shoulders, at least 1000 px wide. The halftone portrait is generated automatically a few minutes after saving.
+        options:
+          media: photos
+      - name: topics
+        label: Testifies on / focus areas
+        type: string
+        list: true
+        description: Short tags, e.g. "Mobile apps & SDKs".
+      - name: highlights
+        label: At a glance
+        type: string
+        list: true
+        description: 3–5 bullets shown on the home page card and at the top of the profile. Current positions go here.
+      - name: education
+        label: Education
+        type: string
+        list: true
+      - name: recognition
+        label: Recognition
+        type: string
+        list: true
+      - name: links
+        label: Links
+        type: object
+        list: true
+        fields:
+          - name: label
+            type: string
+          - name: url
+            label: URL
+            type: string
+      - name: cv
+        label: CV (PDF)
+        type: file
+        options:
+          media: documents
+      - name: testimony_list
+        label: Prior testimony list (PDF)
+        type: file
+        options:
+          media: documents
+      - name: portrait
+        label: Portrait adjustments (optional)
+        type: object
+        description: Only needed if the automatic framing looks off.
+        fields:
+          - name: zoom
+            type: number
+            description: 1 = default. Larger = closer crop (e.g. 1.15).
+          - name: shift_x
+            label: Shift sideways
+            type: number
+            description: 0 = centred. Positive moves the face right (e.g. 0.05).
+          - name: background
+            type: select
+            description: Use "fade" or "trim" only if the background isn't removed cleanly.
+            options:
+              values: [auto, fade, trim]
+      - name: body
+        label: Biography
+        type: text
+        description: The first paragraph is shown large as the introduction. Separate paragraphs with a blank line. *Italics* and [links](https://example.com) are allowed.
+
+  - name: cases
+    label: Cases of note
+    type: file
+    path: content/cases.yml
+    format: yaml
+    fields:
+      - name: cases
+        label: Cases
+        type: object
+        list: true
+        fields:
+          - name: name
+            label: Case name
+            type: string
+            required: true
+          - name: short_name
+            label: Short name
+            type: string
+          - name: forum
+            label: Court and case number
+            type: string
+          - name: law
+            type: string
+          - name: status
+            type: select
+            required: true
+            options:
+              values: [Verdict, Judgment, Settled, Pending, PTAB]
+          - name: year
+            type: number
+          - name: issue
+            label: Technical issue
+            type: text
+          - name: experts
+            type: string
+            list: true
+            description: File names from People, without ".md" (e.g. serge-egelman).
+          - name: retained_by
+            label: Retained by
+            type: select
+            options:
+              values: [plaintiff, defendant, petitioner, respondent, government]
+          - name: link
+            label: Docket or press link
+            type: string
+          - name: outside_cse
+            label: Work done before or outside CSE
+            type: boolean
+          - name: featured
+            label: Show in "Recent matters" at the top of the home page
+            type: boolean
+          - name: question
+            label: Question shown in "Recent matters"
+            type: string
+
+  - name: site
+    label: Site text & contact details
+    type: file
+    path: content/site.yml
+    format: yaml
+    fields:
+      - name: name
+        type: string
+      - name: short_name
+        type: string
+      - name: description
+        label: Search-engine description
+        type: text
+      - name: email
+        type: string
+      - name: phone
+        type: string
+      - name: offices
+        type: string
+        list: true
+      - name: registered_in
+        type: string
+      - name: hero
+        label: Top of home page
+        type: object
+        fields:
+          - name: kicker
+            type: string
+          - name: headline
+            type: string
+          - name: headline_emphasis
+            type: string
+          - name: lede
+            type: text
+      - name: matters_intro
+        type: text
+      - name: matters
+        label: Matters we handle
+        type: object
+        list: true
+        fields:
+          - name: title
+            type: string
+          - name: body
+            type: text
+          - name: experts
+            type: string
+            list: true
+      - name: services_intro
+        type: text
+      - name: services
+        label: How we help
+        type: object
+        list: true
+        fields:
+          - name: title
+            type: string
+          - name: body
+            type: text
+      - name: experts_intro
+        type: text
+      - name: engage_intro
+        type: text
+      - name: conflicts_checklist
+        label: What to send for a conflicts check
+        type: string
+        list: true

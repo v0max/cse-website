@@ -1,0 +1,59 @@
+# Regenerates halftone portraits whenever a photo or a person's file changes,
+# then commits them to the same branch (which triggers a normal Vercel deploy).
+name: Portraits
+
+on:
+  push:
+    paths:
+      - "content/people/**"
+      - "content/photos/**"
+      - "tools/portraits/**"
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "Regenerate every portrait"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portraits-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  portraits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tools/portraits/requirements.txt
+
+      - name: Cache segmentation model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/cse-portraits
+          key: u2net-human-seg-v1
+
+      - run: pip install -r tools/portraits/requirements.txt
+
+      - name: Generate portraits
+        run: python tools/portraits/build.py ${{ inputs.all && '--all' || '' }}
+
+      - name: Commit changed portraits
+        run: |
+          if [ -n "$(git status --porcelain public/portraits)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/portraits
+            git commit -m "Update generated portraits"
+            git pull --rebase
+            git push
+          else
+            echo "Portraits already up to date."
+          fi
