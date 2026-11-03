@@ -96,12 +96,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* All links: cobalt, darker on hover. Dark sections override this below. */
+/* All links: cobalt, no underline; darker and underlined on hover.
+   Dark sections override the colour below. */
 a {
   color: var(--accent);
+  text-decoration: none;
 }
 a:hover {
   color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Remove browser default margins on headings and paragraphs; each component
@@ -246,17 +250,13 @@ p {
    Each name links to that person's profile. Used in the hero's "Recent
    matters" list, on §1 matter cards, in the "Expert" column of the §4 cases
    table, and in "With …" lines under a profile's Selected matters.
-   Names inherit the colour of the text around them and are underlined, so
-   they read as links on both light and dark backgrounds. */
+   Names are cobalt (light cobalt on the dark hero, see section 7) with no
+   underline; they underline on hover like every other link. */
 .expert-links a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: currentColor;
+  color: var(--accent);
 }
 .expert-links a:hover {
-  color: var(--accent);
+  color: var(--accent-hover);
 }
 
 /* .btn: rectangular buttons. Combine with one variant:
@@ -265,6 +265,10 @@ p {
                  §5 "Email team@cse.llc", profile "Retain …" card
    .btn--ghost   outlined button on dark backgrounds: hero "Meet the experts"
    (!important keeps button text from picking up the generic link colours.) */
+.btn,
+.btn:hover {
+  text-decoration: none !important;
+}
 .btn {
   display: inline-block;
   padding: 13px 22px;
@@ -337,9 +341,11 @@ p {
   border-bottom: 1px solid var(--rule);
   background: var(--paper);
 }
+/* The bar is 80px tall on desktop: a ~64px logo plus 8px above and below.
+   If you resize the logo, adjust this padding to keep the bar's height. */
 .site-header__inner {
-  padding-top: 18px;
-  padding-bottom: 18px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -357,20 +363,40 @@ p {
 }
 .brand:hover {
   color: var(--ink);
+  text-decoration: none;
 }
-/* The boxed "CSE" mark. */
+/* The boxed "CSE" mark (about twice its original size; smaller on phones). */
+.brand {
+  gap: 18px;
+}
 .brand__mark {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 30px;
+  line-height: 1;
   letter-spacing: 0.08em;
-  border: 1.5px solid var(--ink);
-  padding: 4px 8px;
+  border: 2.5px solid var(--ink);
+  padding: 15px 14px 14px 16px;
 }
-/* "Computer Science Experts" next to the mark. */
+/* "Computer Science Experts, LLC" next to the mark. */
 .brand__name {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+}
+@media (max-width: 900px) {
+  .brand {
+    gap: 12px;
+  }
+  .brand__mark {
+    font-size: 18px;
+    padding: 8px 8px 7px 10px;
+    border-width: 2px;
+  }
+  .brand__name {
+    font-size: 18px;
+  }
 }
 
 /* .site-nav: "Matters · Experts · Cases" links plus the "Contact us" button. */
@@ -388,6 +414,7 @@ p {
 }
 .site-nav a:not(.btn):hover {
   color: var(--accent);
+  text-decoration: none;
 }
 
 /* Footer: near-black bar at the bottom of every page. The left column has
@@ -576,6 +603,8 @@ p {
   font-size: 13px;
   color: var(--dark-faint);
 }
+/* Expert names on the dark hero: light cobalt. */
+.featured__who .expert-links a,
 .featured__who .expert-links a:hover {
   color: var(--accent-on-dark);
 }
@@ -861,8 +890,10 @@ p {
 .case-name {
   color: var(--ink);
   font-style: italic;
-  text-decoration-color: #a9b0bc;
-  text-underline-offset: 3px;
+}
+/* Case names that link to the docket turn cobalt on hover. */
+a.case-name:hover {
+  color: var(--accent);
 }
 /* The superscript "1" after a case name, linking to the footnote. */
 .fn {
