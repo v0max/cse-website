@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCasesFor, getPeople, getPerson, getSite } from "@/lib/content";
 import { inline, paragraphs } from "@/lib/markdown";
-import { Portrait, SiteFooter, SiteHeader } from "@/ui/Chrome";
+import { ExpertLinks, Portrait, SiteFooter, SiteHeader } from "@/ui/Chrome";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -100,9 +100,14 @@ export default async function ExpertPage({ params }: Props) {
                   <ul className="matters-list">
                     {cases.map((c) => (
                       <li key={c.name}>
-                        <span>
+                        <div>
                           <em>{c.name}</em> · {c.law}
-                        </span>
+                          {c.experts.some((s) => s !== slug) && (
+                            <div className="matters-list__with">
+                              With <ExpertLinks slugs={c.experts.filter((s) => s !== slug)} />
+                            </div>
+                          )}
+                        </div>
                         <span className={`status-text status--${c.status.toLowerCase()}`}>
                           {c.status}
                           {c.year ? ` · ${c.year}` : ""}

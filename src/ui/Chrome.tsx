@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Person } from "@/lib/content";
-import { getSite } from "@/lib/content";
+import { getPerson, getSite, lastNames } from "@/lib/content";
 
 export function SiteHeader({ home = false }: { home?: boolean }) {
   const site = getSite();
@@ -14,8 +14,8 @@ export function SiteHeader({ home = false }: { home?: boolean }) {
         </Link>
         <nav aria-label="Primary" className="site-nav">
           <a href={`${base}#matters`}>Matters</a>
-          <a href={`${base}#cases`}>Cases</a>
           <a href={`${base}#experts`}>Experts</a>
+          <a href={`${base}#cases`}>Cases</a>
           <a href={`${base}#engage`} className="btn btn--accent">
             Contact us
           </a>
@@ -81,5 +81,34 @@ export function Portrait({ person, size, className = "" }: { person: Person; siz
       height={size}
       loading="lazy"
     />
+  );
+}
+
+/**
+ * Names of experts, each linked to that expert's profile page.
+ * Use it anywhere a case, matter or practice area lists who worked on it, so
+ * names are always clickable. `short` shows last names only ("Egelman · Schechter").
+ */
+export function ExpertLinks({
+  slugs,
+  short = false,
+  separator = ", ",
+  className = "expert-links",
+}: {
+  slugs: string[];
+  short?: boolean;
+  separator?: string;
+  className?: string;
+}) {
+  const labels = short ? lastNames(slugs) : slugs.map((s) => getPerson(s)?.name ?? s);
+  return (
+    <span className={className}>
+      {slugs.map((slug, i) => (
+        <span key={slug}>
+          {i > 0 && separator}
+          <Link href={`/experts/${slug}`}>{labels[i]}</Link>
+        </span>
+      ))}
+    </span>
   );
 }

@@ -1,41 +1,91 @@
-/* Computer Science Experts — site styles.
-   Colours, type and spacing live in the variables below; change them here. */
+/* =============================================================================
+   Computer Science Experts: site styles
+   =============================================================================
 
+   This is the only stylesheet. It is loaded once, by src/app/layout.tsx, and
+   applies to every page on the site:
+
+     • Home page ......... src/app/page.tsx
+     • Expert profiles ... src/app/experts/[slug]/page.tsx  (one per person,
+                           e.g. /experts/serge-egelman)
+     • Shared pieces ..... src/ui/Chrome.tsx  (site header, footer, section
+                           headings, portraits, linked expert names)
+
+   The file is ordered the way the pages are read, top to bottom:
+
+     1. Design tokens (colours)
+     2. Base element defaults
+     3. Shared utilities used on several pages (labels, chips, bullets, buttons)
+     4. Portraits
+     5. Site header and footer (every page)
+     6. Home page: section bands and the "§ n" section headings
+     7. Home page: hero (dark band at the very top)
+     8. Home page §1 Matters we handle
+     9. Home page §2 The experts
+    10. Home page §3 How we help
+    11. Home page §4 Cases of note
+    12. Home page §5 Engaging us (dark band at the bottom)
+    13. Expert profile pages
+
+   To find where a class is used, search the .tsx files for
+   className="<name>" (e.g. className="matter").
+
+   Class names follow a simple block__part--variant pattern:
+     .expert-card            the whole card
+     .expert-card__links     a part inside the card
+     .btn--light             a variant of a button
+   ========================================================================== */
+
+
+/* -----------------------------------------------------------------------------
+   1. Design tokens
+   Change a colour here and it changes everywhere it is used.
+   Fonts are not set here: --font-sans (IBM Plex Sans), --font-serif
+   (IBM Plex Serif) and --font-mono (IBM Plex Mono) are defined by next/font
+   in src/app/layout.tsx.
+   -------------------------------------------------------------------------- */
 :root {
-  --ink: #12161d;
-  --ink-2: #3a414d;
-  --muted: #4a5260;
-  --paper: #f5f5f1;
-  --tint: #ecede8;
-  --white: #ffffff;
-  --rule: #d5d7d2;
-  --rule-soft: #e3e4df;
-  --accent: #2340b0;
-  --accent-hover: #16297a;
-  --accent-on-dark: #9db0ff;
-  --dark-text: #e9ebe6;
-  --dark-muted: #c9ced6;
-  --dark-faint: #a9b0bc;
-  --dark-rule: #3a414d;
-  --verdict: #0f6b5c;
-  --settled: #2340b0;
-  --pending: #8a5a00;
-  --other: #4a5260;
+  --ink: #12161d;            /* near-black: body text; background of the hero, §5 band and "Retain" card */
+  --ink-2: #3a414d;          /* softer text: paragraphs inside cards, table cells, bullet lists */
+  --muted: #4a5260;          /* grey text: small mono labels, intros, footnotes, case court/docket lines */
+  --paper: #f5f5f1;          /* off-white page background and site header */
+  --tint: #ecede8;           /* light grey: topic chips and the §3 "How we help" band */
+  --white: #ffffff;          /* expert cards, document card, light buttons, headings on dark bands */
+  --rule: #d5d7d2;           /* thin dividing lines between sections, table rows, card borders */
+  --rule-soft: #e3e4df;      /* fainter lines inside cards (expert card footer, document list) */
+  --accent: #2340b0;         /* cobalt: links, "§ n" numbers, "Contact us" button */
+  --accent-hover: #16297a;   /* darker cobalt for link and accent-button hover */
+  --accent-on-dark: #9db0ff; /* light cobalt for links and highlights on dark backgrounds (hero, §5) */
+  --dark-text: #e9ebe6;      /* main text on dark backgrounds */
+  --dark-muted: #c9ced6;     /* secondary text on dark backgrounds (hero lede, §5 step text) */
+  --dark-faint: #a9b0bc;     /* tertiary text on dark backgrounds (hero kicker, footer text) */
+  --dark-rule: #3a414d;      /* dividing lines on dark backgrounds (hero "Recent matters" list) */
+  --verdict: #0f6b5c;        /* green status tag: Verdict / Judgment in the cases table */
+  --settled: #2340b0;        /* blue status tag: Settled */
+  --pending: #8a5a00;        /* amber status tag: Pending */
+  --other: #4a5260;          /* grey status tag: PTAB */
 
-  /* --font-sans, --font-serif and --font-mono are set by next/font in src/app/layout.tsx */
   color-scheme: light;
 }
 
+
+/* -----------------------------------------------------------------------------
+   2. Base element defaults (all pages)
+   -------------------------------------------------------------------------- */
+
+/* Widths include padding and borders, so boxes are sized the way they look. */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/* In-page links (e.g. "Meet the experts" → #experts) scroll instead of jumping. */
 html {
   scroll-behavior: smooth;
 }
 
+/* Page background, default text colour and body type for every page. */
 body {
   margin: 0;
   background: var(--paper);
@@ -46,12 +96,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* All links: cobalt, darker on hover. Dark sections override this below. */
 a {
   color: var(--accent);
 }
 a:hover {
   color: var(--accent-hover);
 }
+
+/* Remove browser default margins on headings and paragraphs; each component
+   sets its own spacing instead. */
 h1,
 h2,
 h3,
@@ -60,6 +114,8 @@ p {
   margin: 0;
 }
 
+/* .wrap: the centred content column (max 1200px) inside every band, the
+   header, the footer and the profile page. */
 .wrap {
   max-width: 1200px;
   margin: 0 auto;
@@ -73,7 +129,16 @@ p {
   }
 }
 
-/* ---------- shared bits ---------- */
+
+/* -----------------------------------------------------------------------------
+   3. Shared utilities (used on more than one page)
+   -------------------------------------------------------------------------- */
+
+/* .label: small uppercase mono caption above a block of content.
+   Home: "TESTIFIES ON" on expert cards (with .expert-card .label below);
+   hero "RECENT MATTERS · THE TECHNICAL QUESTION" (with .label--dark).
+   Profile: "AT A GLANCE", "BIOGRAPHY", "SELECTED MATTERS", "RECOGNITION",
+   "EDUCATION" (with .label--accent) and "DOCUMENTS" in the right-hand card. */
 .label {
   margin: 0 0 14px;
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -83,34 +148,52 @@ p {
   text-transform: uppercase;
   color: var(--muted);
 }
+/* Cobalt version: section captions in the main column of a profile page. */
 .label--accent {
   color: var(--accent);
   margin-bottom: 18px;
 }
+/* Version for dark backgrounds: the "Recent matters" caption in the home hero. */
 .label--dark {
   color: var(--dark-faint);
   font-size: 12px;
   margin: 20px 0 8px;
 }
+
+/* .mono-sm: small mono text.
+   Home: "1.1, 1.2…" numbers on matter cards; "01–04" on How-we-help items;
+   "Step 1–3" in §5. Profile: "PDF ↓" / "↗" tags in the Documents card. */
 .mono-sm {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 13px;
   color: var(--muted);
 }
+
+/* .mono-xs: the court and docket number under each case name in the
+   home-page cases table. */
 .mono-xs {
   margin-top: 4px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
   color: var(--muted);
 }
+
+/* .strong: medium-weight links, e.g. "Full profile →" on expert, consulting
+   and staff cards. */
 .strong {
   font-weight: 500;
 }
+
+/* .stack-6: vertical stack with 6px gaps; the two text columns in the footer. */
 .stack-6 {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
+
+/* .chips / .chip: the grey topic tags ("Wiretap & CIPA", "Dark patterns"…).
+   Home: "Testifies on" row on each testifying-expert card (.chip--sm).
+   Profile: under the person's name at the top of the page (.chip). */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -124,6 +207,12 @@ p {
 .chip--sm {
   padding: 3px 10px;
 }
+
+/* .bullets: bulleted credential lists.
+   Home: the five credentials on each testifying-expert card; consulting
+   cards use .bullets--tight.
+   Profile: "At a glance" (.bullets--lg), Recognition and Education
+   (resized by .two-col .bullets in section 13). */
 .bullets {
   margin: 0;
   padding-left: 18px;
@@ -142,12 +231,40 @@ p {
   font-size: 18px;
   color: var(--ink);
 }
+
+/* .footnote: small grey note under a list.
+   Home: the "¹ Includes work our experts performed before joining…" note
+   under the cases table. Profile: "A complete testimony list is available
+   on request" under Selected matters. */
 .footnote {
   margin-top: 16px;
   font-size: 14px;
   color: var(--muted);
 }
 
+/* .expert-links: expert names rendered by <ExpertLinks> (src/ui/Chrome.tsx).
+   Each name links to that person's profile. Used in the hero's "Recent
+   matters" list, on §1 matter cards, in the "Expert" column of the §4 cases
+   table, and in "With …" lines under a profile's Selected matters.
+   Names inherit the colour of the text around them and are underlined, so
+   they read as links on both light and dark backgrounds. */
+.expert-links a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: currentColor;
+}
+.expert-links a:hover {
+  color: var(--accent);
+}
+
+/* .btn: rectangular buttons. Combine with one variant:
+   .btn--accent  cobalt "Contact us" button at the right of the site header
+   .btn--light   white button on dark backgrounds: hero "How to engage us",
+                 §5 "Email team@cse.llc", profile "Retain …" card
+   .btn--ghost   outlined button on dark backgrounds: hero "Meet the experts"
+   (!important keeps button text from picking up the generic link colours.) */
 .btn {
   display: inline-block;
   padding: 13px 22px;
@@ -177,6 +294,8 @@ p {
 .btn--ghost:hover {
   border-color: var(--dark-text);
 }
+
+/* .button-row: the pair of buttons under the hero headline. */
 .button-row {
   margin-top: 40px;
   display: flex;
@@ -184,12 +303,19 @@ p {
   gap: 12px;
 }
 
-/* ---------- portraits ---------- */
+
+/* -----------------------------------------------------------------------------
+   4. Portraits (<Portrait> in src/ui/Chrome.tsx)
+   The halftone headshots generated by tools/portraits into public/portraits.
+   Size is set per use (120px on testifying cards, 104px consulting, 88px
+   staff, 240px on profile pages); position tweaks live with each card below.
+   -------------------------------------------------------------------------- */
 .portrait {
   display: block;
   object-fit: cover;
   flex: none;
 }
+/* Fallback when someone has no portrait yet: a dark square with initials. */
 .portrait--initials {
   display: flex;
   align-items: center;
@@ -201,7 +327,12 @@ p {
   letter-spacing: 0.04em;
 }
 
-/* ---------- header / footer ---------- */
+
+/* -----------------------------------------------------------------------------
+   5. Site header and footer (<SiteHeader>, <SiteFooter>; on every page)
+   -------------------------------------------------------------------------- */
+
+/* Top bar: CSE mark and firm name on the left, navigation on the right. */
 .site-header {
   border-bottom: 1px solid var(--rule);
   background: var(--paper);
@@ -215,6 +346,8 @@ p {
   justify-content: space-between;
   gap: 16px;
 }
+
+/* .brand: the logo link at the top left (links to the home page). */
 .brand {
   display: flex;
   align-items: center;
@@ -225,6 +358,7 @@ p {
 .brand:hover {
   color: var(--ink);
 }
+/* The boxed "CSE" mark. */
 .brand__mark {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 500;
@@ -233,10 +367,13 @@ p {
   border: 1.5px solid var(--ink);
   padding: 4px 8px;
 }
+/* "Computer Science Experts" next to the mark. */
 .brand__name {
   font-weight: 500;
   font-size: 16px;
 }
+
+/* .site-nav: "Matters · Experts · Cases" links plus the "Contact us" button. */
 .site-nav {
   display: flex;
   flex-wrap: wrap;
@@ -253,6 +390,9 @@ p {
   color: var(--accent);
 }
 
+/* Footer: near-black bar at the bottom of every page. The left column has
+   the firm name, office cities, phone and email; the right column (.site-footer__legal)
+   has the copyright, the no-cookies line and the not-legal-advice line. */
 .site-footer {
   background: #0b0e13;
   color: var(--dark-faint);
@@ -277,18 +417,31 @@ p {
   color: var(--dark-muted);
 }
 
-/* ---------- sections ---------- */
+
+/* -----------------------------------------------------------------------------
+   6. Home page: section bands and section headings
+   Each home-page section is a full-width <section class="band"> containing
+   a <div class="wrap section">. <SectionHead> (src/ui/Chrome.tsx) draws the
+   "§ 1  Matters we handle" heading and intro paragraph at the top of each.
+   -------------------------------------------------------------------------- */
+
+/* Full-width band with a thin line underneath. Plain bands: §1 Matters,
+   §2 Experts, §4 Cases. */
 .band {
   border-bottom: 1px solid var(--rule);
 }
+/* Light grey band: §3 How we help. */
 .band--tint {
   background: var(--tint);
 }
+/* Near-black band: §5 Engaging us. */
 .band--dark {
   background: var(--ink);
   color: var(--dark-text);
   border-bottom: 0;
 }
+
+/* Vertical padding inside every home-page band (smaller on phones). */
 .section {
   padding-top: 104px;
   padding-bottom: 96px;
@@ -299,6 +452,8 @@ p {
     padding-bottom: 64px;
   }
 }
+
+/* .section-head: "§ n" on the left, title and intro on the right. */
 .section-head {
   display: flex;
   flex-wrap: wrap;
@@ -307,6 +462,7 @@ p {
   margin-bottom: 56px;
   scroll-margin-top: 24px;
 }
+/* The cobalt "§ 1" … "§ 5" number. */
 .section-head__n {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 14px;
@@ -319,6 +475,7 @@ p {
   flex: 1 1 560px;
   min-width: 0;
 }
+/* Serif section title, e.g. "Matters we handle". */
 .section-head h2 {
   font-family: var(--font-serif), Georgia, serif;
   font-weight: 400;
@@ -328,6 +485,7 @@ p {
 .band--dark .section-head h2 {
   color: var(--white);
 }
+/* Grey intro sentence under the title (text comes from content/site.yml). */
 .section-head__intro {
   margin-top: 16px;
   max-width: 680px;
@@ -336,11 +494,14 @@ p {
 .band--dark .section-head__intro {
   color: var(--dark-muted);
 }
-section[id] {
-  scroll-margin-top: 0;
-}
 
-/* ---------- hero ---------- */
+
+/* -----------------------------------------------------------------------------
+   7. Home page: hero (the dark band directly under the header)
+   Left: kicker, headline, lede, two buttons (.hero__main).
+   Right: "Recent matters · the technical question" list (.hero__aside),
+   built from cases marked `featured: true` in content/cases.yml.
+   -------------------------------------------------------------------------- */
 .hero {
   background: var(--ink);
   color: var(--dark-text);
@@ -357,6 +518,7 @@ section[id] {
   flex: 999 1 560px;
   min-width: 0;
 }
+/* Small uppercase line above the headline (site.yml → hero.kicker). */
 .kicker {
   margin-bottom: 28px;
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -365,6 +527,7 @@ section[id] {
   text-transform: uppercase;
   color: var(--dark-faint);
 }
+/* The large serif headline; the <em> part is the light-cobalt phrase. */
 .hero h1 {
   font-family: var(--font-serif), Georgia, serif;
   font-weight: 400;
@@ -375,6 +538,7 @@ section[id] {
 .hero h1 em {
   color: var(--accent-on-dark);
 }
+/* Paragraph under the headline (site.yml → hero.lede). */
 .hero__lede {
   margin-top: 32px;
   max-width: 620px;
@@ -382,11 +546,15 @@ section[id] {
   line-height: 1.6;
   color: var(--dark-muted);
 }
+
+/* Right-hand "Recent matters" column. */
 .hero__aside {
   flex: 1 1 340px;
   min-width: 0;
   border-top: 1px solid var(--dark-rule);
 }
+/* One featured case: the question (.featured__q), the case name and status
+   (.featured__case), and the linked expert names (.featured__who). */
 .featured {
   padding: 18px 0;
   border-bottom: 1px solid var(--dark-rule);
@@ -408,6 +576,10 @@ section[id] {
   font-size: 13px;
   color: var(--dark-faint);
 }
+.featured__who .expert-links a:hover {
+  color: var(--accent-on-dark);
+}
+/* "Includes work performed before or outside CSE…" under the list. */
 .hero__note {
   margin-top: 14px;
   font-size: 13px;
@@ -416,31 +588,21 @@ section[id] {
 .hero__note a {
   color: var(--accent-on-dark);
 }
-.hero__strip {
-  border-top: 1px solid #2a3039;
-}
-.hero__strip-inner {
-  padding-top: 22px;
-  padding-bottom: 22px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 48px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 14px;
-  color: var(--dark-muted);
-}
-.hero__strip b {
-  color: var(--white);
-  font-weight: 400;
-}
 
-/* ---------- §1 matters ---------- */
+
+/* -----------------------------------------------------------------------------
+   8. Home page §1 Matters we handle (id="matters")
+   A grid of practice-area cards from site.yml → matters. Each card has a
+   "1.n" number, a title, a paragraph and, at the bottom, the linked last
+   names of the experts who cover that area (.matter__who).
+   -------------------------------------------------------------------------- */
 .matters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   border-top: 1px solid var(--ink);
   border-left: 1px solid var(--rule);
 }
+/* One practice-area card (lines on the right and bottom draw the grid). */
 .matter {
   padding: 28px 28px 32px;
   border-right: 1px solid var(--rule);
@@ -458,6 +620,8 @@ section[id] {
   font-size: 16px;
   color: var(--ink-2);
 }
+/* Expert names pinned to the bottom of the card ("Egelman · Schechter").
+   margin-top:auto pushes it down so names line up across a row of cards. */
 .matter__who {
   margin-top: auto !important;
   padding-top: 8px;
@@ -466,105 +630,17 @@ section[id] {
   color: var(--muted) !important;
 }
 
-/* ---------- §2 services ---------- */
-.services {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 32px;
-}
-.services li {
-  border-top: 3px solid var(--ink);
-  padding-top: 20px;
-}
-.services h3 {
-  margin: 8px 0 10px;
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 500;
-  font-size: 26px;
-}
-.services p {
-  font-size: 16px;
-  color: var(--ink-2);
-}
 
-/* ---------- §3 cases ---------- */
-.table-scroll {
-  overflow-x: auto;
-  border-top: 1px solid var(--ink);
-}
-.cases {
-  width: 100%;
-  min-width: 820px;
-  border-collapse: collapse;
-  font-size: 16px;
-}
-.cases th {
-  text-align: left;
-  padding: 14px 16px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.cases td {
-  padding: 18px 16px;
-  vertical-align: top;
-  border-top: 1px solid var(--rule);
-  color: var(--ink-2);
-}
-.cases th:first-child,
-.cases td:first-child {
-  padding-left: 0;
-  width: 30%;
-}
-.cases th:nth-child(2) {
-  width: 18%;
-}
-.cases th:last-child,
-.cases td:last-child {
-  padding-right: 0;
-  width: 16%;
-}
-.case-name {
-  color: var(--ink);
-  font-style: italic;
-  text-decoration-color: #a9b0bc;
-  text-underline-offset: 3px;
-}
-.fn {
-  text-decoration: none;
-  margin-left: 2px;
-}
-.status {
-  display: inline-block;
-  margin-bottom: 6px;
-  padding: 2px 8px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border: 1px solid currentColor;
-}
-.status--verdict,
-.status--judgment {
-  color: var(--verdict);
-}
-.status--settled {
-  color: var(--settled);
-}
-.status--pending {
-  color: var(--pending);
-}
-.status--ptab {
-  color: var(--other);
-}
+/* -----------------------------------------------------------------------------
+   9. Home page §2 The experts (id="experts")
+   Three groups, each under a small caption (.group-label):
+     Testifying experts  → white cards in .expert-grid (.expert-card)
+     Consulting experts  → lighter cards in .consult-grid (.consult)
+     Research staff      → compact rows in .staff-grid (.staff)
+   Every card has id="<slug>" so /#serge-egelman scrolls to it.
+   -------------------------------------------------------------------------- */
 
-/* ---------- §4 experts ---------- */
+/* "TESTIFYING EXPERTS" / "CONSULTING EXPERTS" / "RESEARCH STAFF" captions. */
 .group-label {
   margin: 0 0 20px;
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -574,9 +650,13 @@ section[id] {
   text-transform: uppercase;
   color: var(--muted);
 }
+/* Extra space above the second and third captions. */
 .group-label--spaced {
   margin-top: 64px;
 }
+
+/* Testifying experts: grid of white cards (two or three per row on desktop,
+   one per row on phones). */
 .expert-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -587,6 +667,8 @@ section[id] {
     grid-template-columns: 1fr;
   }
 }
+/* One testifying-expert card: portrait and name, "Testifies on" chips,
+   credential bullets, then the "Full profile → / CV" links at the bottom. */
 .expert-card {
   background: var(--white);
   border: 1px solid var(--rule);
@@ -596,25 +678,30 @@ section[id] {
   gap: 16px;
   scroll-margin-top: 24px;
 }
+/* Portrait and name side by side at the top of the card. */
 .expert-card__head {
   display: flex;
   gap: 18px;
   align-items: center;
 }
+/* Pulls the 120px portrait slightly into the card padding. */
 .expert-card__portrait {
   margin: -8px 0 -8px -8px;
 }
+/* The expert's name. */
 .expert-card h4 {
   font-family: var(--font-serif), Georgia, serif;
   font-weight: 500;
   font-size: 25px;
   line-height: 1.2;
 }
+/* Smaller "TESTIFIES ON" caption inside the card. */
 .expert-card .label {
   font-size: 12px;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
 }
+/* Footer row of the card: "Full profile →" and "CV (PDF)". */
 .expert-card__links {
   margin-top: auto;
   padding-top: 12px;
@@ -627,6 +714,9 @@ section[id] {
 .expert-card__links a {
   padding: 6px 0;
 }
+
+/* Consulting experts: lighter cards (no background, rule on top) with
+   portrait, name, short bullets and "Full profile →". */
 .consult-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -648,10 +738,14 @@ section[id] {
   font-weight: 500;
   font-size: 22px;
 }
+/* "Full profile →" link on a consulting card. */
 .consult .strong {
   font-size: 15px;
   padding: 6px 0;
 }
+
+/* Research staff: portrait on the left, name, two-line description and
+   "Full profile →" on the right. */
 .staff-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -677,13 +771,137 @@ section[id] {
   font-size: 15px;
   color: var(--ink-2);
 }
+/* "Full profile →" link on a staff row. */
 .staff .strong {
   display: inline-block;
   font-size: 15px;
   padding: 6px 0;
 }
 
-/* ---------- §5 engage ---------- */
+
+/* -----------------------------------------------------------------------------
+   10. Home page §3 How we help (grey band)
+   Four services from site.yml → services, each with a "01–04" number, a
+   serif title and a paragraph, under a heavy top rule.
+   -------------------------------------------------------------------------- */
+.services {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+}
+.services li {
+  border-top: 3px solid var(--ink);
+  padding-top: 20px;
+}
+.services h3 {
+  margin: 8px 0 10px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 26px;
+}
+.services p {
+  font-size: 16px;
+  color: var(--ink-2);
+}
+
+
+/* -----------------------------------------------------------------------------
+   11. Home page §4 Cases of note (id="cases")
+   The table built from content/cases.yml: Matter | Law | Technical issue ·
+   status | Expert. On narrow screens the table scrolls sideways inside
+   .table-scroll rather than squashing.
+   -------------------------------------------------------------------------- */
+.table-scroll {
+  overflow-x: auto;
+  border-top: 1px solid var(--ink);
+}
+.cases {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+/* Column headings: small uppercase mono. */
+.cases th {
+  text-align: left;
+  padding: 14px 16px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* Body cells, with a line between rows. */
+.cases td {
+  padding: 18px 16px;
+  vertical-align: top;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+/* Column widths: Matter 30%, Law 18%, Expert 16%; Technical issue takes the rest.
+   The first and last columns sit flush with the table edges. */
+.cases th:first-child,
+.cases td:first-child {
+  padding-left: 0;
+  width: 30%;
+}
+.cases th:nth-child(2) {
+  width: 18%;
+}
+.cases th:last-child,
+.cases td:last-child {
+  padding-right: 0;
+  width: 16%;
+}
+/* Italic case name in the Matter column (a link when cases.yml has `link`). */
+.case-name {
+  color: var(--ink);
+  font-style: italic;
+  text-decoration-color: #a9b0bc;
+  text-underline-offset: 3px;
+}
+/* The superscript "1" after a case name, linking to the footnote. */
+.fn {
+  text-decoration: none;
+  margin-left: 2px;
+}
+/* Outlined status tag above the technical issue ("VERDICT · 2025").
+   The colour comes from the status--* class; the border uses the same colour. */
+.status {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+/* Status colours. Also used by .status-text in a profile's Selected matters. */
+.status--verdict,
+.status--judgment {
+  color: var(--verdict);
+}
+.status--settled {
+  color: var(--settled);
+}
+.status--pending {
+  color: var(--pending);
+}
+.status--ptab {
+  color: var(--other);
+}
+
+
+/* -----------------------------------------------------------------------------
+   12. Home page §5 Engaging us (id="engage"; dark band above the footer)
+   Three numbered steps (.steps) and a boxed warning with the email
+   button (.callout). The header's "Contact us" button jumps here.
+   -------------------------------------------------------------------------- */
 .steps {
   list-style: none;
   margin: 0;
@@ -692,10 +910,12 @@ section[id] {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px;
 }
+/* One step column, under a grey top rule. */
 .steps > li {
   border-top: 1px solid #5a6270;
   padding-top: 20px;
 }
+/* "Step 1" labels in light cobalt. */
 .steps .mono-sm {
   color: var(--accent-on-dark);
 }
@@ -710,6 +930,7 @@ section[id] {
   font-size: 16px;
   color: var(--dark-muted);
 }
+/* The conflicts-check checklist in Step 1 (site.yml → conflicts_checklist). */
 .steps ul {
   margin: 12px 0 0;
   padding-left: 18px;
@@ -721,6 +942,8 @@ section[id] {
 .steps a {
   color: var(--accent-on-dark);
 }
+/* Outlined box: "Please don't send confidential information…" plus the
+   "Email team@cse.llc" button. */
 .callout {
   margin-top: 56px;
   padding: 24px 28px;
@@ -739,7 +962,14 @@ section[id] {
   font-weight: 600;
 }
 
-/* ---------- profile page ---------- */
+
+/* -----------------------------------------------------------------------------
+   13. Expert profile pages (/experts/<slug>)
+   Top: .profile-hero, with breadcrumb, large portrait, name and topic chips.
+   Below: .profile, with the main column (.profile__main: At a glance,
+   Biography, Selected matters, Recognition / Education) on the left and the
+   side column (.profile__aside: Documents card, "Retain …" card) on the right.
+   -------------------------------------------------------------------------- */
 .profile-hero {
   border-bottom: 1px solid var(--rule);
 }
@@ -747,6 +977,7 @@ section[id] {
   padding-top: 56px;
   padding-bottom: 72px;
 }
+/* "Experts / Testifying Expert" breadcrumb above the portrait. */
 .crumbs {
   margin-bottom: 40px;
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -756,12 +987,14 @@ section[id] {
 .crumbs a {
   color: var(--muted);
 }
+/* Portrait on the left, name and chips on the right (stacks on phones). */
 .profile-hero__row {
   display: flex;
   flex-wrap: wrap;
   gap: 40px 56px;
   align-items: flex-end;
 }
+/* Lets the 240px portrait hang slightly over the line under the hero. */
 .profile-hero__portrait {
   margin-bottom: -24px;
 }
@@ -769,6 +1002,7 @@ section[id] {
   flex: 999 1 520px;
   min-width: 0;
 }
+/* The person's name. */
 .profile-hero h1 {
   margin-bottom: 24px;
   font-family: var(--font-serif), Georgia, serif;
@@ -776,6 +1010,8 @@ section[id] {
   font-size: clamp(44px, 5vw, 64px);
   line-height: 1.05;
 }
+
+/* Two-column body: main column and side column. */
 .profile {
   padding-top: 72px;
   padding-bottom: 104px;
@@ -791,16 +1027,22 @@ section[id] {
   flex-direction: column;
   gap: 56px;
 }
+/* First paragraph of the biography, in larger serif type. */
 .lede {
   margin-bottom: 16px;
   font-family: var(--font-serif), Georgia, serif;
   font-size: 22px;
   line-height: 1.5;
 }
+/* Remaining biography paragraphs. */
 .body-text {
   margin-bottom: 16px;
   color: var(--ink-2);
 }
+
+/* "Selected matters": one row per case from content/cases.yml that lists
+   this person, with the case name and law on the left, status and year on
+   the right, and a "With …" line naming any co-experts. */
 .matters-list {
   list-style: none;
   margin: -10px 0 0;
@@ -814,10 +1056,20 @@ section[id] {
   gap: 4px 24px;
   justify-content: space-between;
 }
+/* "With Schneier, Bonneau" under a case: linked names of the other experts. */
+.matters-list__with {
+  margin-top: 4px;
+  font-size: 15px;
+  color: var(--muted);
+}
+/* Status and year at the right of each row, coloured by the .status--* rules
+   in section 11. */
 .status-text {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 14px;
 }
+
+/* Recognition and Education side by side (stacked on phones). */
 .two-col {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -827,6 +1079,8 @@ section[id] {
   font-size: 16px;
   gap: 8px;
 }
+
+/* Side column holding the two cards below. */
 .profile__aside {
   flex: 1 1 300px;
   min-width: 0;
@@ -834,6 +1088,8 @@ section[id] {
   flex-direction: column;
   gap: 24px;
 }
+/* "Documents" card: white box listing CV, prior-testimony list and outside
+   links (from the person's `cv`, `testimony_list` and `links` fields). */
 .doc-card {
   background: var(--white);
   border: 1px solid var(--rule);
@@ -850,6 +1106,7 @@ section[id] {
 .doc-card li:last-child {
   border-bottom: 1px solid var(--rule-soft);
 }
+/* Each document row: label on the left, "PDF ↓" or "↗" tag on the right. */
 .doc-card a {
   display: flex;
   justify-content: space-between;
@@ -858,6 +1115,8 @@ section[id] {
   text-decoration: none;
   font-weight: 500;
 }
+/* Dark "Retain <name>" card (or "Work with CSE" for staff) with the
+   conflicts-check note and email button. */
 .contact-card {
   background: var(--ink);
   color: var(--dark-text);

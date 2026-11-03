@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { getCases, getPeople, getSite, lastNames, type Person } from "@/lib/content";
+import { getCases, getPeople, getSite, type Person } from "@/lib/content";
 import { inline } from "@/lib/markdown";
-import { Portrait, SectionHead, SiteFooter, SiteHeader } from "@/ui/Chrome";
+import { ExpertLinks, Portrait, SectionHead, SiteFooter, SiteHeader } from "@/ui/Chrome";
 
 function ExpertCard({ person }: { person: Person }) {
   return (
@@ -46,8 +46,6 @@ export default function Home() {
   const staff = people.filter((p) => p.role === "Research Staff");
   const featured = cases.filter((c) => c.featured);
   const anyOutside = cases.some((c) => c.outsideCse);
-  const nameOf = (slugs: string[]) =>
-    slugs.map((s) => people.find((p) => p.slug === s)?.name ?? s).join(", ");
 
   return (
     <>
@@ -81,7 +79,7 @@ export default function Home() {
                       {c.year ? `, ${c.year}` : ""}
                     </div>
                     <div className="featured__who">
-                      {c.experts.length > 1 ? "Experts" : "Expert"}: {nameOf(c.experts)}
+                      {c.experts.length > 1 ? "Experts" : "Expert"}: <ExpertLinks slugs={c.experts} />
                     </div>
                   </div>
                 ))}
@@ -92,17 +90,6 @@ export default function Home() {
                 )}
               </aside>
             )}
-          </div>
-          <div className="hero__strip">
-            <div className="wrap hero__strip-inner">
-              <span>
-                <b>{testifying.length}</b> testifying experts
-              </span>
-              <span>
-                <b>{consulting.length}</b> consulting experts
-              </span>
-              <span>{site.offices.join(" · ")}</span>
-            </div>
           </div>
         </section>
 
@@ -115,98 +102,18 @@ export default function Home() {
                   <span className="mono-sm">1.{i + 1}</span>
                   <h3>{m.title}</h3>
                   <p>{inline(m.body)}</p>
-                  <p className="matter__who">{lastNames(m.experts).join(" · ")}</p>
+                  <p className="matter__who">
+                    <ExpertLinks slugs={m.experts} short separator=" · " />
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="band band--tint">
-          <div className="wrap section">
-            <SectionHead n={2} title="How we help" intro={site.servicesIntro} />
-            <ol className="services">
-              {site.services.map((s, i) => (
-                <li key={s.title}>
-                  <span className="mono-sm">{String(i + 1).padStart(2, "0")}</span>
-                  <h3>{s.title}</h3>
-                  <p>{inline(s.body)}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        <section className="band" id="cases">
-          <div className="wrap section">
-            <SectionHead
-              n={3}
-              title="Cases of note"
-              intro="A selection of matters in which our experts have been retained."
-            />
-            <div className="table-scroll">
-              <table className="cases">
-                <thead>
-                  <tr>
-                    <th scope="col">Matter</th>
-                    <th scope="col">Law</th>
-                    <th scope="col">Technical issue · status</th>
-                    <th scope="col">Expert</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cases.map((c) => (
-                    <tr key={c.name}>
-                      <td>
-                        {c.link ? (
-                          <a href={c.link} className="case-name" target="_blank" rel="noopener">
-                            {c.name}
-                          </a>
-                        ) : (
-                          <span className="case-name">{c.name}</span>
-                        )}
-                        {c.outsideCse && (
-                          <sup>
-                            <a href="#fn-outside" className="fn">
-                              1
-                            </a>
-                          </sup>
-                        )}
-                        <div className="mono-xs">{c.forum}</div>
-                      </td>
-                      <td>{c.law}</td>
-                      <td>
-                        <span className={`status status--${c.status.toLowerCase()}`}>
-                          {c.status}
-                          {c.year ? ` · ${c.year}` : ""}
-                        </span>
-                        <div>{c.issue}</div>
-                      </td>
-                      <td>
-                        {c.experts.map((s, i) => (
-                          <span key={s}>
-                            {i > 0 && ", "}
-                            <Link href={`/experts/${s}`}>{lastNames([s])[0]}</Link>
-                          </span>
-                        ))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {anyOutside && (
-              <p id="fn-outside" className="footnote">
-                <sup>1</sup> Includes work our experts performed before joining, or outside of, CSE. Status reflects the
-                public record; several matters are on appeal.
-              </p>
-            )}
-          </div>
-        </section>
-
         <section className="band" id="experts">
           <div className="wrap section">
-            <SectionHead n={4} title="The experts" intro={site.expertsIntro} />
+            <SectionHead n={2} title="The experts" intro={site.expertsIntro} />
 
             <h3 className="group-label">Testifying experts</h3>
             <div className="expert-grid">
@@ -255,6 +162,83 @@ export default function Home() {
                   ))}
                 </div>
               </>
+            )}
+          </div>
+        </section>
+
+        <section className="band band--tint">
+          <div className="wrap section">
+            <SectionHead n={3} title="How we help" intro={site.servicesIntro} />
+            <ol className="services">
+              {site.services.map((s, i) => (
+                <li key={s.title}>
+                  <span className="mono-sm">{String(i + 1).padStart(2, "0")}</span>
+                  <h3>{s.title}</h3>
+                  <p>{inline(s.body)}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section className="band" id="cases">
+          <div className="wrap section">
+            <SectionHead
+              n={4}
+              title="Cases of note"
+              intro="A selection of matters in which our experts have been retained."
+            />
+            <div className="table-scroll">
+              <table className="cases">
+                <thead>
+                  <tr>
+                    <th scope="col">Matter</th>
+                    <th scope="col">Law</th>
+                    <th scope="col">Technical issue · status</th>
+                    <th scope="col">Expert</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cases.map((c) => (
+                    <tr key={c.name}>
+                      <td>
+                        {c.link ? (
+                          <a href={c.link} className="case-name" target="_blank" rel="noopener">
+                            {c.name}
+                          </a>
+                        ) : (
+                          <span className="case-name">{c.name}</span>
+                        )}
+                        {c.outsideCse && (
+                          <sup>
+                            <a href="#fn-outside" className="fn">
+                              1
+                            </a>
+                          </sup>
+                        )}
+                        <div className="mono-xs">{c.forum}</div>
+                      </td>
+                      <td>{c.law}</td>
+                      <td>
+                        <span className={`status status--${c.status.toLowerCase()}`}>
+                          {c.status}
+                          {c.year ? ` · ${c.year}` : ""}
+                        </span>
+                        <div>{c.issue}</div>
+                      </td>
+                      <td>
+                        <ExpertLinks slugs={c.experts} short />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {anyOutside && (
+              <p id="fn-outside" className="footnote">
+                <sup>1</sup> Includes work our experts performed before joining, or outside of, CSE. Status reflects the
+                public record; several matters are on appeal.
+              </p>
             )}
           </div>
         </section>
